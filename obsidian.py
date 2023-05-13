@@ -1,11 +1,19 @@
+# You might need to install colorama module by running pip install colorama
+from colorama import Fore, Style
+import winsound
+
 def print_board(board):
     print("-------------")
     for i in range(3):
         print("|", end=" ")
         for j in range(3):
-            print(board[i][j], "|", end=" ")
+            color = Fore.GREEN if board[i][j] == "X" else Fore.RED if board[i][j] == "O" else Fore.RESET
+            print(color + board[i][j] + Style.RESET_ALL, "|", end=" ")
         print()
         print("-------------")
+
+def play_sound(sound_file):
+    winsound.PlaySound(sound_file, winsound.SND_ASYNC)
 
 def check_win(board, player):
     for i in range(3):
@@ -25,19 +33,21 @@ def tic_tac_toe():
     current_player = players[0]
     print_board(board)
     while True:
-        print("Player", current_player, "turn")
+        print(Fore.YELLOW + "Player", current_player, "turn" + Style.RESET_ALL)
         row = int(input("Enter row number (0, 1, 2): "))
         col = int(input("Enter column number (0, 1, 2): "))
         if board[row][col] != " ":
-            print("Invalid move, try again")
+            print(Fore.CYAN + "Invalid move, try again" + Style.RESET_ALL)
             continue
         board[row][col] = current_player
+        play_sound("move_sound.wav")
         print_board(board)
         if check_win(board, current_player):
-            print("Player", current_player, "wins!")
+            play_sound("win_sound.wav")
+            print(Fore.GREEN + "Player", current_player, "wins!" + Style.RESET_ALL)
             break
         if " " not in [item for sublist in board for item in sublist]:
-            print("It's a tie!")
+            print(Fore.BLUE + "It's a tie!" + Style.RESET_ALL)
             break
         current_player = players[(players.index(current_player) + 1) % 2]
 
